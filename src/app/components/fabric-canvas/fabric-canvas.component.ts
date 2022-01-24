@@ -10,10 +10,9 @@ import {fabric} from "fabric";
 export class FabricCanvasComponent implements OnInit, AfterViewInit {
 
   _canvas: fabric.Canvas | undefined = undefined;
+  @ViewChild('canvas') private _canvasElement: ElementRef | undefined;
 
   constructor(private _fabricResizeService: FabricResizeService) { }
-
-  @ViewChild('canvas') private _canvasElement: ElementRef | undefined;
 
   ngOnInit(): void {}
 
@@ -22,7 +21,6 @@ export class FabricCanvasComponent implements OnInit, AfterViewInit {
   }
 
   _initFabric() {
-    console.log(this._canvasElement?.nativeElement);
     if(this._canvasElement !== undefined) {
       this._canvas = new fabric.Canvas(this._canvasElement.nativeElement, {
         selection: true,
