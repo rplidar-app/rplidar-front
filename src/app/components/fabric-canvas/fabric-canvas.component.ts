@@ -1,5 +1,6 @@
 import {Component, OnInit, AfterViewInit, ElementRef, ViewChild} from '@angular/core';
 import {FabricResizeService} from "../../services/fabric-services/resize-service/fabric-resize.service";
+import {FabricZoomService} from "../../services/fabric-services/zoom-service/fabric-zoom.service";
 import {fabric} from "fabric";
 
 @Component({
@@ -12,7 +13,10 @@ export class FabricCanvasComponent implements OnInit, AfterViewInit {
   _canvas: fabric.Canvas | undefined = undefined;
   @ViewChild('canvas') private _canvasElement: ElementRef | undefined;
 
-  constructor(private _fabricResizeService: FabricResizeService) { }
+  constructor(
+    private _fabricResizeService: FabricResizeService,
+    private _fabricZoomService: FabricZoomService,
+  ) { }
 
   ngOnInit(): void {}
 
@@ -28,9 +32,9 @@ export class FabricCanvasComponent implements OnInit, AfterViewInit {
         centeredScaling: true,
         allowTouchScrolling: true,
         preserveObjectStacking: false,
-        backgroundColor: 'red',
       });
       this._fabricResizeService.init(this._canvas);
+      this._fabricZoomService.init(this._canvas);
     }
   }
 
