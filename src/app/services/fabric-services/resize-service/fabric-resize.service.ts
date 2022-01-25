@@ -25,7 +25,10 @@ export class FabricResizeService extends AbstractFabricService {
   }
 
   private _handleResize() {
-    this._canvas?.setHeight(window.innerHeight);
-    this._canvas?.setWidth(window.innerWidth);
+    if(this._canvas === undefined) {
+      return ;
+    }
+    this._canvas.setHeight(window.innerHeight);
+    this._canvas.setWidth(window.innerWidth);
   }
 }
