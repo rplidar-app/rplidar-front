@@ -38,6 +38,7 @@ export class FabricCanvasComponent implements OnInit, AfterViewInit {
       this._fabricResizeService.init(this._canvas);
       this._fabricZoomService.init(this._canvas);
       this._fabricPanningService.init(this._canvas);
+      // this._canvas.add(new fabric.Circle({fill: 'red', radius: 10}));
     }
   }
 

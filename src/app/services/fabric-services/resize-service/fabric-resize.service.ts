@@ -1,21 +1,19 @@
 import { Injectable } from '@angular/core';
-import { fabric } from "fabric";
 import { fromEvent, interval } from "rxjs";
 import { debounce } from 'rxjs/operators';
+
+import { AbstractFabricService } from "../../../abstract-classes/absctract-fabric-service/abstract-fabric-service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class FabricResizeService {
+export class FabricResizeService extends AbstractFabricService {
 
-  private _canvas: fabric.Canvas | undefined = undefined;
   private _eventsInterval: number = 100;
 
-  constructor() { }
+  constructor() { super(); }
 
-  init(canvas: fabric.Canvas) {
-    this._canvas = canvas;
-    this._handleResize();
+  protected _bindEventHandlers() {
     fromEvent(window, 'resize').pipe(
       debounce(() => interval(this._eventsInterval))
     ).subscribe({
@@ -23,6 +21,7 @@ export class FabricResizeService {
         this._handleResize();
       }
     });
+    this._handleResize();
   }
 
   private _handleResize() {

@@ -1,23 +1,20 @@
 import { Injectable } from '@angular/core';
 import { fabric } from "fabric";
 
+import { AbstractFabricService } from "../../../abstract-classes/absctract-fabric-service/abstract-fabric-service";
+
 @Injectable({
   providedIn: 'root'
 })
-export class FabricPanningService {
+export class FabricPanningService extends AbstractFabricService {
 
-  private _canvas: fabric.Canvas | undefined = undefined;
   private _panningIsActive: boolean = false;
   private _cursorPreviousPositionX: number = 0;
   private _cursorPreviousPositionY: number = 0;
 
-  constructor() { }
+  constructor() { super(); }
 
-  public init(canvas: fabric.Canvas) {
-    this._canvas = canvas;
-    this._bindEventHandlers();
-  }
-  private _bindEventHandlers() {
+  protected _bindEventHandlers() {
     this._canvas?.on('mouse:down', this.__onMouseDown.bind(this));
     this._canvas?.on('mouse:move', this.__onMouseMove.bind(this));
     this._canvas?.on('mouse:up', this.__onMouseUp.bind(this));

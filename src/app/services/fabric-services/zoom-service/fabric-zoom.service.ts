@@ -1,21 +1,18 @@
 import { Injectable } from '@angular/core';
 import { fabric } from "fabric";
 
+import { AbstractFabricService } from "../../../abstract-classes/absctract-fabric-service/abstract-fabric-service";
+
 @Injectable({
   providedIn: 'root'
 })
-export class FabricZoomService {
+export class FabricZoomService extends AbstractFabricService {
 
-  private _canvas: fabric.Canvas | undefined = undefined;
   private _maxZoomValue: number = 20;
   private _minZoomValue: number = .01;
 
-  constructor() { }
+  constructor() { super(); }
 
-  public init(canvas: fabric.Canvas) {
-    this._canvas = canvas;
-    this._bindEventHandlers();
-  }
 
   public zoom(delta: number) {
     this._canvas?.setZoom(this._calculateZoom(delta));
@@ -37,7 +34,7 @@ export class FabricZoomService {
     return zoom;
   }
 
-  private _bindEventHandlers() {
+  protected _bindEventHandlers() {
     this._canvas?.on('mouse:wheel', this.__onMouseWheel.bind(this));
   }
 
