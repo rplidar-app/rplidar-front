@@ -1,6 +1,7 @@
 import {Component, OnInit, AfterViewInit, ElementRef, ViewChild} from '@angular/core';
 import {FabricResizeService} from "../../services/fabric-services/resize-service/fabric-resize.service";
 import {FabricZoomService} from "../../services/fabric-services/zoom-service/fabric-zoom.service";
+import {FabricPanningService} from "../../services/fabric-services/panning-service/fabric-panning.service";
 import {fabric} from "fabric";
 
 @Component({
@@ -16,6 +17,7 @@ export class FabricCanvasComponent implements OnInit, AfterViewInit {
   constructor(
     private _fabricResizeService: FabricResizeService,
     private _fabricZoomService: FabricZoomService,
+    private _fabricPanningService: FabricPanningService,
   ) { }
 
   ngOnInit(): void {}
@@ -35,6 +37,7 @@ export class FabricCanvasComponent implements OnInit, AfterViewInit {
       });
       this._fabricResizeService.init(this._canvas);
       this._fabricZoomService.init(this._canvas);
+      this._fabricPanningService.init(this._canvas);
     }
   }
 
