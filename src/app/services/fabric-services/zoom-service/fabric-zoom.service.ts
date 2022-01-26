@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
-import { fabric } from "fabric";
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {fabric} from "fabric";
 
-import { AbstractFabricService } from "../../../abstract-classes/absctract-fabric-service/abstract-fabric-service";
+import {AbstractFabricService} from "../../../abstract-classes/absctract-fabric-service/abstract-fabric-service";
 
 @Injectable({
   providedIn: 'root'
@@ -35,11 +36,24 @@ export class FabricZoomService extends AbstractFabricService {
   }
 
   protected _bindEventHandlers() {
-    this._canvas?.on('mouse:wheel', this.__onMouseWheel.bind(this));
+    // this._canvas?.on('mouse:wheel', this.__onMouseWheel.bind(this));
+    let canvasMouseWheelObservable = new Observable<fabric.IEvent<WheelEvent>>(subscriber => {
+      const canvas = this._canvas;
+      if(canvas === undefined) {
+        subscriber.error('Canvas is undefined');
+        return () => null;
+      }
+      const eventHandler = (e: fabric.IEvent<WheelEvent>) => subscriber.next(e);
+      canvas.on('mouse:wheel', eventHandler);
+      return () => {
+        canvas.off(eventHandler);
+      };
+    });
+    canvasMouseWheelObservable.subscribe(e => this.__onMouseWheel(e));
   }
 
-  private __onMouseWheel(event: fabric.IEvent) {
-    const wheelEvent: WheelEvent = event.e as WheelEvent;
+  private __onMouseWheel(event: fabric.IEvent<WheelEvent>) {
+    const wheelEvent: WheelEvent = event.e;
     const zoom = this._calculateZoom(wheelEvent.deltaY);
     this._canvas?.zoomToPoint({x: wheelEvent.offsetX, y: wheelEvent.offsetY}, zoom);
   }
