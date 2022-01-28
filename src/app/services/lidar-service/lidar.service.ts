@@ -22,8 +22,8 @@ export class LidarService {
 
   constructor(private _requestService: RequestService) { }
 
-  public get scans(): Observable<LidarScanInterface> {
-    return this._requestService.getRequest<LidarScanInterface>(this._scanURL);
+  public get scans(): Observable<LidarScanInterface[]> {
+    return this._requestService.getRequest<LidarScanInterface[]>(this._scanURL);
   }
 
   public get info(): Observable<LidarInfoInterface> {
