@@ -23,37 +23,42 @@ export class ScansDrawingService {
 
   public init(canvas: fabric.Canvas) {
     this._canvas = canvas;
-    this._lidarService.scans.subscribe(scans => {
-      if(this._canvas === null) {
-        return ;
-      }
-      for(const scan of scans) {
-        const coordinates = this._getDotCoordinates(scan);
-        let dot = new fabric.Circle(this._dotsProps);
-        dot.left = coordinates.x;
-        dot.top = coordinates.y;
-        // this._dots.push(dot);
-        this._canvas.add(dot);
-      }
-      this._group = new fabric.Group(this._dots, {
-        selectable: false, hasBorders: false, hasControls: false, evented: false
-      });
-      this._centralDot = new fabric.Circle(this._dotsProps);
-      this._centralDot.fill = 'red';
-      this._centralDot.radius = 10;
-      // this._group.add(this._centralDot);
-      this._canvas.add(this._centralDot);
-      this._canvas.renderAll();
-      // this._canvas.add(this._group);
-      this._polling();
-    });
+    // this._lidarService.scans.subscribe(scans => {
+    //   if(this._canvas === null) {
+    //     return ;
+    //   }
+    //   for(const scan of scans) {
+    //     const coordinates = this._getDotCoordinates(scan);
+    //     let dot = new fabric.Circle(this._dotsProps);
+    //     dot.left = coordinates.x;
+    //     dot.top = coordinates.y;
+    //     // this._dots.push(dot);
+    //     this._canvas.add(dot);
+    //   }
+    //   this._group = new fabric.Group(this._dots, {
+    //     selectable: false, hasBorders: false, hasControls: false, evented: false
+    //   });
+    //   this._centralDot = new fabric.Circle(this._dotsProps);
+    //   this._centralDot.fill = 'red';
+    //   this._centralDot.radius = 10;
+    //   // this._group.add(this._centralDot);
+    //   this._canvas.add(this._centralDot);
+    //   this._canvas.renderAll();
+    //   this._polling();
+    //   // this._canvas.add(this._group);
+    // });
+    this._centralDot = new fabric.Circle(this._dotsProps);
+    this._centralDot.fill = 'red';
+    this._centralDot.radius = 10;
+    this._canvas.add(this._centralDot);
+    this._polling();
   }
 
   private _polling() {
     interval(100).subscribe({
       next: () => {
         this._lidarService.scans.subscribe(scans => {
-          if(this._group === null || this._canvas === null || this._centralDot === null) {
+          if(/*this._group === null || */this._canvas === null || this._centralDot === null) {
             return ;
           }
           if(scans.length > this._dots.length) {
