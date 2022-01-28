@@ -3,6 +3,9 @@ import {FabricResizeService} from "../../services/fabric-services/resize-service
 import {FabricZoomService} from "../../services/fabric-services/zoom-service/fabric-zoom.service";
 import {FabricPanningService} from "../../services/fabric-services/panning-service/fabric-panning.service";
 import {fabric} from "fabric";
+import {LidarService} from "../../services/lidar-service/lidar.service";
+import {ScansDrawingService} from "../../services/scans-drawing-service/scans-drawing.service";
+import {interval} from 'rxjs';
 
 @Component({
   selector: 'app-fabric-canvas',
@@ -18,6 +21,8 @@ export class FabricCanvasComponent implements OnInit, AfterViewInit {
     private _fabricResizeService: FabricResizeService,
     private _fabricZoomService: FabricZoomService,
     private _fabricPanningService: FabricPanningService,
+    private _lidarService: LidarService,
+    private _scansDrawingService: ScansDrawingService,
   ) { }
 
   ngOnInit(): void {}
@@ -38,7 +43,15 @@ export class FabricCanvasComponent implements OnInit, AfterViewInit {
       this._fabricResizeService.init(this._canvas);
       this._fabricZoomService.init(this._canvas);
       this._fabricPanningService.init(this._canvas);
+      this._scansDrawingService.init(this._canvas);
       // this._canvas.add(new fabric.Circle({fill: 'red', radius: 10}));
+      // interval(1000).subscribe({
+      //   next: () => {
+      //     this._lidarService.scans.subscribe(data => {
+      //       console.log(data);
+      //     })
+      //   }
+      // });
     }
   }
 
