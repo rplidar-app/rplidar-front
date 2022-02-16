@@ -101,10 +101,11 @@ export class ScansDrawingService {
   }
 
   private _getDotCoordinates(scan: LidarScanInterface) {
-    const angle = scan[1], distance = scan[2];
-    return {
-      x: -distance*Math.cos(angle*this._degToRadFactor),
-      y: -distance*Math.sin(angle*this._degToRadFactor),
-    };
+    // const angle = scan[1], distance = scan[2];
+    // return {
+    //   x: -distance*Math.cos(angle*this._degToRadFactor),
+    //   y: -distance*Math.sin(angle*this._degToRadFactor),
+    // };
+    return {x: scan[0], y: scan[1]};
   }
 }
