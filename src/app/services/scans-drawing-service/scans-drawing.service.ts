@@ -36,12 +36,15 @@ export class ScansDrawingService {
             return ;
           }
           if(scans.length > this._dots.length) {
-            for(let i = 0; i < scans.length - this._dots.length; i += 1) {
+            // console.log('before: ', this._dots.length, scans.length);
+            while (this._dots.length < scans.length) {
               let dot = new fabric.Circle(this._dotsProps);
               // this._group.add(dot);
               this._canvas.add(dot);
               this._dots.push(dot);
+              // console.log('add', i)
             }
+            // console.log('after: ', this._dots.length, scans.length);
           } else {
             if(scans.length < this._dots.length) {
               for(let i = scans.length - 1; i < this._dots.length; i += 1) {
@@ -52,6 +55,10 @@ export class ScansDrawingService {
           }
           for(let i = 0; i < scans.length; i += 1) {
             const coordinates = ScansDrawingService._getDotCoordinates(scans[i]);
+            // if(this._dots[i] === undefined) {
+            //   console.log(this._dots.length, scans.length);
+            //   return ;
+            // }
             this._dots[i].left = coordinates.x;
             this._dots[i].top = coordinates.y;
             this._dots[i].opacity = 1;
