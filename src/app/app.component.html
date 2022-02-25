@@ -1,1 +1,9 @@
-<app-fabric-canvas></app-fabric-canvas>
+<app-fabric-canvas
+  (canvasMounted)="onCanvasMounted($event)"
+></app-fabric-canvas>
+<app-work-area-controller-view
+  *ngIf="canvasMounted"
+  (startWorkAreaCreation)="onStartWorkAreaCreation()"
+  (discardWorkAreaCreation)="onDiscardWorkAreaCreation()"
+  (applyCreatedWorkArea)="onApplyCreatedWorkArea()"
+></app-work-area-controller-view>
