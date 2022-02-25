@@ -1,0 +1,7 @@
+<div class="wrapper">
+  <div class="container">
+    <button *ngIf="!creationIsActive" (click)="onStartWorkAreaCreationButtonClicked()">start</button>
+    <button *ngIf="creationIsActive" (click)="onDiscardWorkAreaCreationButtonClicked()">discard</button>
+    <button *ngIf="creationIsActive" (click)="onApplyCreatedWorkAreaButtonClicked()">apply</button>
+  </div>
+</div>
