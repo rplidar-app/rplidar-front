@@ -13,6 +13,11 @@
 @base-size: 1vmax;
 @border-radius: @base-size*.25;
 
+@margin--small: 5px;
+@margin--mid: 10px;
+@margin--big: 20px;
+@font-size: @base-size*.9;
+
 @transition-interval: .3s;
 .rounded {
   border-radius: @border-radius;
@@ -70,10 +75,12 @@ input, button, .button {
   border-radius: @border-radius;
   color: @color--gray;
   font-family: arial,sans-serif;
-  font-size: @base-size;
+  font-size: @font-size;
   line-height: @base-size*2;
-  height: @base-size*2;
+  min-height: @base-size*2;
+  min-width: @base-size*4;
   width: auto;//width: @base-size*2;
+  height: auto;
   //text-indent: @base-size*.5;
   transition: all @transition-interval;
   box-shadow: none;
