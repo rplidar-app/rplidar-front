@@ -1,4 +1,4 @@
-import {Component, OnInit, AfterViewInit, ElementRef, ViewChild} from '@angular/core';
+import {Component, OnInit, AfterViewInit, ElementRef, ViewChild, Output, EventEmitter} from '@angular/core';
 import {FabricResizeService} from "../../services/fabric-services/resize-service/fabric-resize.service";
 import {FabricZoomService} from "../../services/fabric-services/zoom-service/fabric-zoom.service";
 import {FabricPanningService} from "../../services/fabric-services/panning-service/fabric-panning.service";
@@ -25,6 +25,9 @@ export class FabricCanvasComponent implements OnInit, AfterViewInit {
     private _scansDrawingService: ScansDrawingService,
   ) { }
 
+  @Output()
+  canvasMounted: EventEmitter<fabric.Canvas> = new EventEmitter<fabric.Canvas>();
+
   ngOnInit(): void {}
 
   ngAfterViewInit() {
@@ -44,6 +47,7 @@ export class FabricCanvasComponent implements OnInit, AfterViewInit {
       this._fabricZoomService.init(this._canvas);
       this._fabricPanningService.init(this._canvas);
       this._scansDrawingService.init(this._canvas);
+      this.canvasMounted.emit(this._canvas);
       // this._canvas.add(new fabric.Circle({fill: 'red', radius: 10}));
       // interval(1000).subscribe({
       //   next: () => {
