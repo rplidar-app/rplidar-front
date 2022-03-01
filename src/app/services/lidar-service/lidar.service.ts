@@ -11,8 +11,7 @@ import { LidarHealthInterface } from "../../interfaces/lidar-interfaces/lidar-he
 })
 export class LidarService {
 
-  private readonly _baseURL: string = 'http://127.0.0.1:8000/';
-  private readonly _lidarURL: string = this._baseURL + 'lidar/';
+  private readonly _lidarURL: string = 'lidar/';
   private readonly _scanURL: string = this._lidarURL + 'scan';
   private readonly _resetURL: string = this._lidarURL + 'reset';
   private readonly _getInfoURL: string = this._lidarURL + 'info';
