@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
 import { fabric } from "fabric";
+import { RequestService } from "../request-service/request.service";
+import { WorkAreaPointsInterface } from "../../interfaces/work-area-interfaces/work-area-points-interface";
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkAreaService {
+
+  private readonly _work_area_get_url: string = 'work_area/get';
+  private readonly _work_area_set_url: string = 'work_area/set';
 
   private _canvas: fabric.Canvas | null = null;
   private _creationIsActive: boolean = false;
@@ -19,11 +24,12 @@ export class WorkAreaService {
     return this._creationIsActive;
   }
 
-  constructor() { }
+  constructor(private _requestService: RequestService) { }
 
   public init(canvas: fabric.Canvas) {
     this._canvas = canvas;
-    this._createWorkAreaView();
+    this._loadPointsFromBack();
+    // this._createWorkAreaView();
   }
 
   public startCreation() {
@@ -64,6 +70,7 @@ export class WorkAreaService {
         this._view.points.push(this._view.points[0]);
         this._view.dirty = true;
         this._canvas?.requestRenderAll();
+        this._sendPointsToBack();
       }
     }
     console.log('applyCreatedWorkArea from the work-area.service');
@@ -172,6 +179,28 @@ export class WorkAreaService {
     // console.log('__onCanvasMouseUp from the work-area.service', event);
   }
 
-  private _sendPointsToBack() {}
+  private _loadPointsFromBack() {
+    this._requestService.getRequest<WorkAreaPointsInterface>(this._work_area_get_url).subscribe((data) => {
+      this._createWorkAreaView();
+      if(!this._view || !this._canvas) {
+        return ;
+      }
+      this._view.points = [];
+      for(const point of data) {
+        this._view.points.push(new fabric.Point(point.x, point.y));
+      }
+      this._view.dirty = true;
+      this._canvas.requestRenderAll();
+    });
+  }
+
+  private _sendPointsToBack() {
+    if(!this._view) {
+      return ;
+    }
+    this._requestService.postRequest<boolean>(this._work_area_set_url, this._view.points).subscribe((response) => {
+      console.log(response);
+    });
+  }
 
 }
