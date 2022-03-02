@@ -31,7 +31,8 @@ export class ScansDrawingService {
   private _polling() {
     interval(100).subscribe({
       next: () => {
-        this._lidarService.scans.subscribe(scans => {
+        this._lidarService.scans.subscribe(groupOfScans => {
+          let scans = [...groupOfScans[0], ...groupOfScans[1]];
           if(this._canvas === null || this._centralDot === null) {
             return ;
           }
@@ -61,7 +62,7 @@ export class ScansDrawingService {
             // }
             this._dots[i].left = coordinates.x;
             this._dots[i].top = coordinates.y;
-            this._dots[i].opacity = 1;
+            this._dots[i].opacity = i < groupOfScans[0].length ? 1 : .25;
           }
           this._canvas.requestRenderAll();
         })
