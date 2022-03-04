@@ -1,1 +1,4 @@
-export interface LidarScanInterface extends Array<number> {}
+export interface LidarScanInterface {
+  inside: Array<number[]>,
+  outside: Array<number[]>
+}
