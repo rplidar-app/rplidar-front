@@ -16,6 +16,21 @@ export class ScansDrawingService {
     originX: 'center', originY: 'center', radius: 5, left: 0, top: 0,
     opacity: 1, fill: 'white', stroke: '', strokeWidth: 0, evented: false, hasControls: false, hasBorders: false,
   };
+  private readonly _unclustered_points_color: string = '#000000';
+  private readonly _cluster_colors: string[] = [
+    '#EC2409',
+    '#F55B09',
+    '#FE9403',
+    '#FDEC00',
+    '#99C403',
+    '#03A534',
+    '#1AACA3',
+    '#098CBD',
+    '#441AB3',
+    '#642B8D',
+    '#C42A93',
+    '#EC2B55',
+  ];
 
   constructor(private _lidarService: LidarService) { }
 
@@ -60,9 +75,23 @@ export class ScansDrawingService {
             //   console.log(this._dots.length, scans.length);
             //   return ;
             // }
+            this._dots[i].fill = 'white';
             this._dots[i].left = coordinates.x;
             this._dots[i].top = coordinates.y;
-            this._dots[i].opacity = i < groupOfScans.inside.length ? 1 : .25;
+            if(i < groupOfScans.inside.length) {
+              this._dots[i].opacity = 1;
+              if(i < groupOfScans.cluster_labels.length) {
+                const label = groupOfScans.cluster_labels[i];
+                if(label == -1) {
+                  this._dots[i].fill = this._unclustered_points_color;
+                } else {
+                  this._dots[i].fill = this._cluster_colors[label%this._cluster_colors.length];
+                }
+              }
+            } else {
+              this._dots[i].opacity = .25;
+            }
+            this._dots[i].dirty = true;
           }
           this._canvas.requestRenderAll();
         })
