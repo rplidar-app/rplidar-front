@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { fabric } from "fabric";
 import { LidarService } from "../lidar-service/lidar.service";
-import { LidarScanInterface } from "../../interfaces/lidar-interfaces/lidar-scan-interface";
+import { PointsGroupFabricView } from "../../classes/fabric-views/points-group-fabric-view/points-group-fabric-view";
 import { interval } from 'rxjs';
 
 @Injectable({
@@ -11,7 +11,9 @@ export class ScansDrawingService {
 
   private _canvas: fabric.Canvas | null = null;
   private _centralDot: fabric.Circle | null = null;
-  private _dots: fabric.Circle[] = [];
+  private _ungroupedPoints: PointsGroupFabricView | null = null;
+  private _untrackedPoints: PointsGroupFabricView | null = null;
+  private _trackedObjects: PointsGroupFabricView[] = [];
   private readonly _dotsProps: object = {
     originX: 'center', originY: 'center', radius: 5, left: 0, top: 0,
     opacity: 1, fill: 'white', stroke: '', strokeWidth: 0, evented: false, hasControls: false, hasBorders: false,
@@ -46,60 +48,41 @@ export class ScansDrawingService {
   private _polling() {
     interval(100).subscribe({
       next: () => {
-        this._lidarService.scans.subscribe(groupOfScans => {
-          let points = [...groupOfScans.inside, ...groupOfScans.outside];
-          if(this._canvas === null || this._centralDot === null) {
+        this._lidarService.scans.subscribe(scan => {
+          if(this._trackedObjects.length !== 0) {
+            for(let obj of this._trackedObjects) {
+              obj.remove();
+            }
+            this._trackedObjects = []
+          }
+          if(this._ungroupedPoints !== null) {
+            this._ungroupedPoints.remove();
+            this._ungroupedPoints = null;
+          }
+          if(this._untrackedPoints !== null) {
+            this._untrackedPoints.remove();
+            this._untrackedPoints = null;
+          }
+          if(this._canvas === null) {
             return ;
           }
-          if(points.length > this._dots.length) {
-            // console.log('before: ', this._dots.length, scans.length);
-            while (this._dots.length < points.length) {
-              let dot = new fabric.Circle(this._dotsProps);
-              // this._group.add(dot);
-              this._canvas.add(dot);
-              this._dots.push(dot);
-              // console.log('add', i)
-            }
-            // console.log('after: ', this._dots.length, scans.length);
-          } else {
-            if(points.length < this._dots.length) {
-              for(let i = points.length - 1; i < this._dots.length; i += 1) {
-                this._dots[i].opacity = 0;
-                this._dots[i].dirty = true;
-              }
-            }
-          }
-          for(let i = 0; i < points.length; i += 1) {
-            const coordinates = ScansDrawingService._getDotCoordinates(points[i]);
-            // if(this._dots[i] === undefined) {
-            //   console.log(this._dots.length, scans.length);
-            //   return ;
-            // }
-            this._dots[i].fill = 'white';
-            this._dots[i].left = coordinates.x;
-            this._dots[i].top = coordinates.y;
-            if(i < groupOfScans.inside.length) {
-              this._dots[i].opacity = 1;
-              if(i < groupOfScans.cluster_labels.length) {
-                const label = groupOfScans.cluster_labels[i];
-                if(label == -1) {
-                  this._dots[i].fill = this._unclustered_points_color;
-                } else {
-                  this._dots[i].fill = this._cluster_colors[label%this._cluster_colors.length];
-                }
-              }
-            } else {
-              this._dots[i].opacity = .25;
-            }
-            this._dots[i].dirty = true;
+          this._untrackedPoints = new PointsGroupFabricView(
+            this._canvas, scan.untracked_points,
+            '#FFF', .25, false, false
+          );
+          this._ungroupedPoints = new PointsGroupFabricView(
+            this._canvas, scan.ungrouped_points,
+            this._unclustered_points_color, 1, false, false
+          );
+          for(let i = 0; i < scan.objects.length; i += 1) {
+            this._trackedObjects.push(new PointsGroupFabricView(
+              this._canvas, scan.objects[i].points,
+              this._cluster_colors[i%this._cluster_colors.length], 1, true, false
+            ));
           }
           this._canvas.requestRenderAll();
         })
       }
     });
-  }
-
-  private static _getDotCoordinates(scan: number[]) {
-    return {x: scan[0], y: scan[1]};
   }
 }
