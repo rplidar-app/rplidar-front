@@ -1,5 +1,10 @@
+import { LidarPointInterface } from "./lidar-point-interface";
+
 export interface LidarScanInterface {
-  inside: Array<number[]>,
-  outside: Array<number[]>
-  cluster_labels: number[]
+  untracked_points: LidarPointInterface[],
+  ungrouped_points: LidarPointInterface[],
+  objects: Array<{
+    points: LidarPointInterface[],
+    speed: number
+  }>,
 }
