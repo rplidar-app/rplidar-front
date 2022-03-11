@@ -67,16 +67,16 @@ export class ScansDrawingService {
             return ;
           }
           this._untrackedPoints = new PointsGroupFabricView(
-            this._canvas, scan.untracked_points,
+            this._canvas, scan.untracked_points, null,
             '#FFF', .25, false, false
           );
           this._ungroupedPoints = new PointsGroupFabricView(
-            this._canvas, scan.ungrouped_points,
+            this._canvas, scan.ungrouped_points, null,
             this._unclustered_points_color, 1, false, false
           );
           for(let i = 0; i < scan.objects.length; i += 1) {
             this._trackedObjects.push(new PointsGroupFabricView(
-              this._canvas, scan.objects[i].points,
+              this._canvas, scan.objects[i].points, scan.objects[i].center,
               this._cluster_colors[i%this._cluster_colors.length], 1, true, false
             ));
           }

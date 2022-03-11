@@ -8,11 +8,13 @@ export class PointsGroupFabricView {
   private _color: string = '#FFF';
   private _opacity: number = 1;
   private _bordered: boolean = false;
+  private _coordinatesOfCenter: [number, number] | null = null;
   private _shouldDoRenderCall: boolean = true;
 
   private _view: fabric.Group | null = null;
   private _dots: fabric.Circle[] = [];
   private _borderRect: fabric.Rect | null = null;
+  private _center: fabric.Circle | null = null;
 
   private readonly _dotsBaseProps: fabric.ICircleOptions = {
     originX: 'center', originY: 'center', radius: 5, left: 0, top: 0, opacity: this._opacity, fill: this._color,
@@ -51,12 +53,14 @@ export class PointsGroupFabricView {
 
   constructor(canvas: fabric.Canvas,
               model: LidarPointInterface[],
+              coordinatesOfCenter: [number, number] | null,
               color: string = '#FFF',
               opacity: number = 1,
               bordered: boolean = false,
               shouldDoRenderCall: boolean = true,) {
     this._canvas = canvas;
     this._model = model;
+    this._coordinatesOfCenter = coordinatesOfCenter;
     this._color = color;
     this._opacity = opacity;
     this._bordered = bordered;
@@ -83,6 +87,12 @@ export class PointsGroupFabricView {
       dot.opacity = this._opacity;
       this._dots.push(dot);
       objectsToGroup.push(dot);
+    }
+    if(this._coordinatesOfCenter !== null) {
+      this._center = new fabric.Circle(this._dotsBaseProps);
+      this._center.left = this._coordinatesOfCenter[0];
+      this._center.top = this._coordinatesOfCenter[1];
+      objectsToGroup.push(this._center);
     }
     this._view = new fabric.Group(objectsToGroup, this._viewBaseProps);
     this._view.stroke = this._color;
@@ -122,6 +132,10 @@ export class PointsGroupFabricView {
     if(this._borderRect) {
       this._view.remove(this._borderRect);
       this._borderRect = null;
+    }
+    if(this._center) {
+      this._view.remove(this._center);
+      this._center = null;
     }
     this._canvas.remove(this._view);
     this._view = null;
