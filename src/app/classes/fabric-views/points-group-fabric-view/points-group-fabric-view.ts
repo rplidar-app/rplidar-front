@@ -12,13 +12,18 @@ export class PointsGroupFabricView {
 
   private _view: fabric.Group | null = null;
   private _dots: fabric.Circle[] = [];
+  private _borderRect: fabric.Rect | null = null;
 
   private readonly _dotsBaseProps: fabric.ICircleOptions = {
     originX: 'center', originY: 'center', radius: 5, left: 0, top: 0, opacity: this._opacity, fill: this._color,
     stroke: '', strokeWidth: 0, evented: false, hasControls: false, hasBorders: false,
   };
   private readonly _viewBaseProps: fabric.IGroupOptions = {
-    originX: 'left', originY: 'top', opacity: 1, stroke: this._color, strokeWidth: 2,
+    originX: 'left', originY: 'top', opacity: 1,
+    evented: false, hasControls: false, hasBorders: false,
+  };
+  private readonly _borderRectBaseProps: fabric.IRectOptions = {
+    originX: 'left', originY: 'top', opacity: 1, stroke: this._color, strokeWidth: 3, fill: '',
     evented: false, hasControls: false, hasBorders: false,
   };
 
@@ -63,6 +68,13 @@ export class PointsGroupFabricView {
     if(!this._canvas || this._model.length === 0 || this._view) {
       return ;
     }
+    let objectsToGroup: Array<fabric.Circle | fabric.Rect> = [];
+    if(this._bordered) {
+      this._createBorderRect();
+      if(this._borderRect) {
+        objectsToGroup.push(this._borderRect);
+      }
+    }
     for(let point of this._model) {
       let dot = new fabric.Circle(this._dotsBaseProps);
       dot.left = point[0];
@@ -70,12 +82,34 @@ export class PointsGroupFabricView {
       dot.fill = this._color;
       dot.opacity = this._opacity;
       this._dots.push(dot);
+      objectsToGroup.push(dot);
     }
-    this._view = new fabric.Group(this._dots, this._viewBaseProps);
+    this._view = new fabric.Group(objectsToGroup, this._viewBaseProps);
     this._view.stroke = this._color;
-    this._view.strokeWidth = this._bordered ? this._viewBaseProps.strokeWidth : 0;
     this._canvas.add(this._view);
     this._render();
+  }
+
+  private _createBorderRect() {
+    if(!this._canvas || this._model.length === 0) {
+      return ;
+    }
+    const baseX = this._model[0][0], baseY = this._model[0][1];
+    // @ts-ignore
+    const margins: number = this._dotsBaseProps.radius + this._borderRectBaseProps.strokeWidth + 20;
+    let minX = baseX, minY = baseY, maxX = baseX, maxY = baseY;
+    for(let point of this._model) {
+      minX = point[0] < minX ? point[0] : minX;
+      minY = point[1] < minY ? point[1] : minY;
+      maxX = point[0] > maxX ? point[0] : maxX;
+      maxY = point[1] > maxY ? point[1] : maxY;
+    }
+    this._borderRect = new fabric.Rect(this._borderRectBaseProps);
+    this._borderRect.stroke = this._color;
+    this._borderRect.left = minX - margins;
+    this._borderRect.top = minY - margins;
+    this._borderRect.width = Math.abs(maxX - minX) + margins*2;
+    this._borderRect.height = Math.abs(maxY - minY) + margins*2;
   }
 
   private _removeView() {
@@ -84,6 +118,10 @@ export class PointsGroupFabricView {
     }
     for(let dot of this._dots) {
       this._view.remove(dot);
+    }
+    if(this._borderRect) {
+      this._view.remove(this._borderRect);
+      this._borderRect = null;
     }
     this._canvas.remove(this._view);
     this._view = null;
