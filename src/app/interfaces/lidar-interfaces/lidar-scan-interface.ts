@@ -5,6 +5,7 @@ export interface LidarScanInterface {
   ungrouped_points: LidarPointInterface[],
   objects: Array<{
     points: LidarPointInterface[],
-    speed: number
+    speed: number,
+    center: [number, number],
   }>,
 }
