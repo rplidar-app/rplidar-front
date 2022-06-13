@@ -15,6 +15,7 @@ export class PointsGroupFabricView {
   private _dots: fabric.Circle[] = [];
   private _borderRect: fabric.Rect | null = null;
   private _center: fabric.Circle | null = null;
+  private _centralDot: fabric.Circle | null = null;
 
   private readonly _dotsBaseProps: fabric.ICircleOptions = {
     originX: 'center', originY: 'center', radius: 5, left: 0, top: 0, opacity: this._opacity, fill: this._color,
@@ -79,20 +80,30 @@ export class PointsGroupFabricView {
         objectsToGroup.push(this._borderRect);
       }
     }
-    for(let point of this._model) {
-      let dot = new fabric.Circle(this._dotsBaseProps);
-      dot.left = point[0];
-      dot.top = point[1];
-      dot.fill = this._color;
-      dot.opacity = this._opacity;
-      this._dots.push(dot);
-      objectsToGroup.push(dot);
-    }
+    // let i = 0;
+    // for(let point of this._model) {
+    //   let dot = new fabric.Circle(this._dotsBaseProps);
+    //   dot.left = point[0];
+    //   dot.top = point[1];
+    //   dot.fill = i === 0 ? '#0F0' : this._color;
+    //   dot.opacity = this._opacity;
+    //   this._dots.push(dot);
+    //   objectsToGroup.push(dot);
+    //   i += 1;
+    // }
     if(this._coordinatesOfCenter !== null) {
       this._center = new fabric.Circle(this._dotsBaseProps);
       this._center.left = this._coordinatesOfCenter[0];
       this._center.top = this._coordinatesOfCenter[1];
+      this._center.radius = 48.5;
+      this._center.fill = '#00000000';
+      this._center.stroke = '#F0F';
+      this._center.strokeWidth = 3;
+      this._centralDot = new fabric.Circle(this._dotsBaseProps);
+      this._centralDot.left = this._coordinatesOfCenter[0];
+      this._centralDot.top = this._coordinatesOfCenter[1];
       objectsToGroup.push(this._center);
+      objectsToGroup.push(this._centralDot);
     }
     this._view = new fabric.Group(objectsToGroup, this._viewBaseProps);
     this._view.stroke = this._color;
@@ -136,6 +147,10 @@ export class PointsGroupFabricView {
     if(this._center) {
       this._view.remove(this._center);
       this._center = null;
+    }
+    if(this._centralDot) {
+      this._view.remove(this._centralDot);
+      this._centralDot = null;
     }
     this._canvas.remove(this._view);
     this._view = null;

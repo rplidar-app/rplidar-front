@@ -1,7 +1,67 @@
 <div class="wrapper">
-  <div class="container">
-    <button *ngIf="!creationIsActive" (click)="onStartWorkAreaCreationButtonClicked()">start</button>
-    <button *ngIf="creationIsActive" (click)="onDiscardWorkAreaCreationButtonClicked()">discard</button>
-    <button *ngIf="creationIsActive" (click)="onApplyCreatedWorkAreaButtonClicked()">apply</button>
+  <div class="buttons--container">
+    <button>Остановить двигатель</button>
+    <select class="fake-select">
+      <option>1 об/с</option>
+      <option>2 об/с</option>
+      <option>3 об/с</option>
+      <option>4 об/с</option>
+      <option>5 об/с</option>
+      <option>6 об/с</option>
+      <option>7 об/с</option>
+    </select>
+    <button style="margin-top: 10px; width: 100%;">Масштаб: 90%</button>
+    <button style="margin-top: 10px; width: 100%;">Шаг сестки: 100 мм</button>
+  </div>
+  <div class="buttons--container">
+    <button *ngIf="!creationIsActive" (click)="onStartWorkAreaCreationButtonClicked()">Задать рабочую область</button>
+    <button *ngIf="creationIsActive" (click)="onDiscardWorkAreaCreationButtonClicked()">Отменить</button>
+    <button *ngIf="creationIsActive" (click)="onApplyCreatedWorkAreaButtonClicked()">Применить</button>
+    <button style="margin-top: 10px; width: 100%;">Сбросить траекторию</button>
+    <div class="zoom_buttons__container">
+      <div class="zoom_button"><b>+</b></div>
+      <div class="zoom_button"><b>-</b></div>
+    </div>
+  </div>
+</div>
+<div class="info--container">
+  <div class="info--header">
+    <div>Точка траектории</div>
+  </div>
+  <div class="info--content">
+<!--    <div class="info&#45;&#45;row">-->
+<!--      <span>Индекс:</span> <span>0</span>-->
+<!--    </div>-->
+    <div class="info--row">
+      <span>X:</span> <span>-496 мм</span>
+    </div>
+    <div class="info--row">
+      <span>Y:</span> <span>1 мм</span>
+    </div>
+    <div class="info--row">
+      <span>Угол:</span> <span>0</span>
+    </div>
+    <div class="info--row">
+      <span>Расстояние:</span> <span>457 мм</span>
+    </div>
+    <div class="info--row">
+      <span>Среднее качество:</span> <span>100%</span>
+    </div>
+  </div>
+</div>
+<div class="settings--container">
+  <div class="info--header">
+    <div>Система координат прибора</div>
+  </div>
+  <div class="info--content">
+    <div class="settings--row">
+      <span>Смещение по X (мм):</span> <input value="0.0">
+    </div>
+    <div class="settings--row">
+      <span>Смещение по Y (мм):</span> <input value="0.0">
+    </div>
+    <div class="settings--row">
+      <span>Угол поворота (град.):</span> <input value="0.0">
+    </div>
   </div>
 </div>
